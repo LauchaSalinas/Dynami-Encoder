@@ -14,8 +14,8 @@ public:
     Dynami_Update();
     Dynami_Mediator *dynamiMediator = NULL;
     void set_mediator(Dynami_Mediator *mediator) { this->dynamiMediator = mediator; }
-    const char *ssid = "upside";
-    const char *password = "fuckpass";
+    String ssid;
+    String password ;
     AsyncWebServer *server = NULL;
     AsyncElegantOtaClass *ElegantOTA= NULL;
     char *get_wifi_status(wl_status_t status); // its not int

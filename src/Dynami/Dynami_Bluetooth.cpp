@@ -1,10 +1,10 @@
 #include "Dynami_Bluetooth.h"
 
-Dynami_Bluetooth::Dynami_Bluetooth(){}
+Dynami_Bluetooth::Dynami_Bluetooth() {}
 
 void Dynami_Bluetooth::BTSetup()
 {
-
+    Serial.begin(115200);
     // Create the BLE Device
     BLEDevice::init("ESP32");
 
@@ -43,9 +43,9 @@ void Dynami_Bluetooth::BTSetup()
     dynamiMediator->bluetoothStartAdvertising();
 }
 
-void Dynami_Bluetooth::BTSendValue(char * txString)
+void Dynami_Bluetooth::BTSendValue(char *txString)
 {
-    if (SCB->deviceConnected)//(this->SCB->deviceConnected)
+    if (SCB->deviceConnected) //(this->SCB->deviceConnected)
     {
         pCharacteristic->setValue(txString);
         pCharacteristic->notify();
@@ -60,7 +60,6 @@ void Dynami_Bluetooth::BTLoop()
     {
         dynamiMediator->bluetoothDeviceDisconnected();
         SCB->oldDeviceConnected = SCB->deviceConnected;
-        
     }
     // connecting
     if (SCB->deviceConnected && !SCB->oldDeviceConnected)
@@ -68,8 +67,22 @@ void Dynami_Bluetooth::BTLoop()
         dynamiMediator->bluetoothDeviceConnected();
         SCB->oldDeviceConnected = SCB->deviceConnected;
     }
+
+    // if (millis() > lastTimeSerialCheck + serialCheckTimeOut)
+    // {
+    //     if (Serial.available())
+    //     {
+    //         SerialBT.write(Serial.read());
+    //     }
+    //     if (SerialBT.available())
+    //     {
+    //         Serial.write(SerialBT.read());
+    //     }
+    //     lastTimeSerialCheck = millis();
+    // }
 }
 
-void Dynami_Bluetooth::startAdvertising(){
+void Dynami_Bluetooth::startAdvertising()
+{
     pServer->startAdvertising(); // restart advertising
 }

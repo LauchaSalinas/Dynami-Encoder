@@ -47,6 +47,8 @@ public:
     void BTSendValue(char *);
     void BTLoop();
     void startAdvertising();
+    unsigned long lastTimeSerialCheck = 0;
+    unsigned int serialCheckTimeOut = 50;
 private:
 };
 

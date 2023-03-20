@@ -5,7 +5,7 @@ Dynami_Mediator::Dynami_Mediator() {}
 void Dynami_Mediator::setRefs
 (Dynami_Battery *bat,           Dynami_Bluetooth *bt,   Dynami_Buttons *btns, 
 Dynami_Display *dsp,            Dynami_Encoder *enc,    Dynami_EnergySave *engsv, 
-Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd)
+Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd, Dynami_Filesystem *file)
 {
     dynamiBattery = bat;
     dynamiBluetooth = bt;
@@ -16,6 +16,7 @@ Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd)
     dynamiNotifyCenter = ntfcen;
     dynamiProgram = prgm;
     dynamiUpdate = upd;
+    dynamiFilesystem = file;
     dynamiBattery->set_mediator(this);      // try to implement this later
     dynamiBluetooth->set_mediator(this);    // try to implement this later
     dynamiButtons->set_mediator(this);      // try to implement this later
@@ -25,6 +26,7 @@ Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd)
     dynamiNotifyCenter->set_mediator(this); // try to implement this later
     dynamiProgram->set_mediator(this);      // try to implement this later
     dynamiUpdate->set_mediator(this);       // try to implement this later
+    dynamiFilesystem->set_mediator(this);   // try to implement this later
 }
 
 // BATTERY INITIATED EVENTS
@@ -93,6 +95,7 @@ void Dynami_Mediator::button2ShortPress()
 {
     dynamiNotifyCenter->debugPrint("Button 2 Short Press");
     // programDirectionChange();
+    getWifiCredentials();
     dynamiUpdate->updateStopWifi();
 }
 
@@ -153,6 +156,16 @@ void Dynami_Mediator::programRepCancelled()
     long resetValue = dynamiEncoder->getEncoderValue();
     //char *debugResetValue = strcat("Reset at: ", (char *)resetValue);
     dynamiNotifyCenter->debugPrint("Reset: ", resetValue);
+}
+
+// UPDATER
+
+void Dynami_Mediator::getWifiCredentials()
+{
+    dynamiUpdate->ssid = dynamiFilesystem->getSSID();
+    dynamiUpdate->password = dynamiFilesystem->getPS();
+    dynamiNotifyCenter->debugPrint(dynamiUpdate->ssid);
+    dynamiNotifyCenter->debugPrint(dynamiUpdate->password);
 }
 
 // Not initiated events

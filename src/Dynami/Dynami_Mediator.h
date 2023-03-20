@@ -10,6 +10,7 @@
 #include "Dynami_NotifyCenter.h"
 #include "Dynami_Program.h"
 #include "Dynami_Update.h"
+#include "Dynami_Filesystem.h"
 
 /**
  * The Base Component provides the basic functionality of storing a mediator's
@@ -39,12 +40,13 @@ class Dynami_EnergySave;
 class Dynami_NotifyCenter;
 class Dynami_Program;
 class Dynami_Update;
+class Dynami_Filesystem;
 
 class Dynami_Mediator
 {
 public:
     Dynami_Mediator();
-    void setRefs(Dynami_Battery *, Dynami_Bluetooth *, Dynami_Buttons *, Dynami_Display *, Dynami_Encoder *, Dynami_EnergySave *, Dynami_NotifyCenter *, Dynami_Program *, Dynami_Update *);
+    void setRefs(Dynami_Battery *, Dynami_Bluetooth *, Dynami_Buttons *, Dynami_Display *, Dynami_Encoder *, Dynami_EnergySave *, Dynami_NotifyCenter *, Dynami_Program *, Dynami_Update *, Dynami_Filesystem *);
     void chargerStatusChanged();
     void cellsQtyChanged();
     void batteryConnectionStatusChanged();
@@ -63,6 +65,10 @@ public:
     //PROGRAM
     void programNewRep();
     void programRepCancelled();
+    //UPDATE
+    void getWifiCredentials();
+    void setWifiCredentials();
+
     //OTHER
     void programDirectionChange();
 
@@ -80,6 +86,7 @@ public:
     Dynami_NotifyCenter *dynamiNotifyCenter = NULL;
     Dynami_Program *dynamiProgram = NULL;
     Dynami_Update *dynamiUpdate = NULL;
+    Dynami_Filesystem *dynamiFilesystem = NULL;
 
 private:
 

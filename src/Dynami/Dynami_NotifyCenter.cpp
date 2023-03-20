@@ -28,6 +28,17 @@ void Dynami_NotifyCenter::debugPrint(char *str, int vl)
   Serial.println(vl);
 }
 
+
+void Dynami_NotifyCenter::debugPrint(int vl)
+{
+  Serial.println(vl);
+}
+
+void Dynami_NotifyCenter::debugPrint(String str)
+{
+  Serial.println(str);
+}
+
 void Dynami_NotifyCenter::SerialNotifyNewRep(int sets, int actualRep, int targetRep, long maxEncodedValue, long encoderValue, int tiempoTotal, int tiempoPicoTotal, int tiempoRetorno, char *velocity)
 {
   Serial.print("SET: ");

@@ -2,9 +2,9 @@
 
 Dynami::Dynami() : 
 dynamiProgram(),dynamiBattery(), dynamiBluetooth(), dynamiDisplay(), dynamiEnergySave(),
-dynamiEncoder(),dynamiButtons(),dynamiNotifyCenter(), dynamiMediator(), dynamiUpdate()
+dynamiEncoder(),dynamiButtons(),dynamiNotifyCenter(), dynamiMediator(), dynamiUpdate(), dynamiFilesystem()
 {
-  dynamiMediator.setRefs(&dynamiBattery,&dynamiBluetooth, &dynamiButtons, &dynamiDisplay, &dynamiEncoder, &dynamiEnergySave, &dynamiNotifyCenter, &dynamiProgram, &dynamiUpdate);
+  dynamiMediator.setRefs(&dynamiBattery,&dynamiBluetooth, &dynamiButtons, &dynamiDisplay, &dynamiEncoder, &dynamiEnergySave, &dynamiNotifyCenter, &dynamiProgram, &dynamiUpdate, &dynamiFilesystem);
   dynamiEnergySave.setDisplayRef(&dynamiDisplay);
   dynamiDisplay.setEnergySaveRef(&dynamiEnergySave);
   dynamiProgram.setPointers(&dynamiEncoder);

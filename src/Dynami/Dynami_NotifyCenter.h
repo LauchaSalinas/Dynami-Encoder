@@ -17,6 +17,8 @@ public:
     void debugPrint(const char *);
     void debugPrint(char *, long);
     void debugPrint(char *, int);
+    void debugPrint(int);
+    void debugPrint(String);
 };
 
 #endif

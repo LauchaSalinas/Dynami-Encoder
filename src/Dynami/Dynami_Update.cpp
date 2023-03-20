@@ -29,7 +29,7 @@ void Dynami_Update::updateOTAWebServer()
     ElegantOTA = new AsyncElegantOtaClass();
     WiFi.mode(WIFI_STA);
     delay(2000);
-    wl_status_t status = WiFi.begin(ssid, password);
+    wl_status_t status = WiFi.begin(ssid.c_str(), password.c_str());
     delay(2000);
 
     // Wait for connection
@@ -37,7 +37,7 @@ void Dynami_Update::updateOTAWebServer()
     {
         delay(1000);
         if (WiFi.status() != WL_CONNECTED)
-            status = WiFi.begin(ssid, password);
+            status = WiFi.begin(ssid.c_str(), password.c_str());
         dynamiMediator->dynamiNotifyCenter->debugPrint(get_wifi_status(WiFi.status()));
         numberOfTries--;
     }

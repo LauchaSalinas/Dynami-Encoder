@@ -11,6 +11,7 @@
 #include "Dynami_Buttons.h"
 #include "Dynami_Mediator.h"
 #include "Dynami_Update.h"
+#include "Dynami_Filesystem.h"
 
 class Dynami
 {
@@ -30,6 +31,7 @@ private:
     Dynami_NotifyCenter dynamiNotifyCenter;
     Dynami_Mediator     dynamiMediator;
     Dynami_Update       dynamiUpdate;
+    Dynami_Filesystem   dynamiFilesystem;
 };
 
 #endif
