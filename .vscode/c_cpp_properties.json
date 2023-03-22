@@ -7,14 +7,7 @@
             "compilerArgs": [],
             "intelliSenseMode": "windows-msvc-x64",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/libraries/**",
-                "C:/Program Files (x86)/Arduino/hardware/tools/avr/lib/gcc/avr/7.3.0/include",
-                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino",
-                "C:/Program Files (x86)/Arduino/hardware/tools/avr/avr/include/**",
-                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/variants/standard",
-                "C:/Program Files (x86)/Arduino",
-                "C:/Users/lsali/AppData/Local/Arduino15/packages/esp32/hardware/esp32/2.0.6/cores/esp32/**"
+                "${workspaceFolder}/**"
             ],
             "forcedInclude": [],
             "cStandard": "c17",
@@ -244,7 +237,6 @@
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\variants\\esp32",
                 "C:\\Users\\lsali\\Documents\\Arduino\\libraries\\ArduinoSort",
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\BLE\\src",
-                "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\BluetoothSerial\\src",
                 "C:\\Users\\lsali\\Documents\\Arduino\\libraries\\ezButton\\src",
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\Wire\\src",
                 "C:\\Users\\lsali\\Documents\\Arduino\\libraries\\Adafruit_GFX_Library",
@@ -258,6 +250,9 @@
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\FS\\src",
                 "C:\\Users\\lsali\\Documents\\Arduino\\libraries\\AsyncElegantOTA\\src",
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\Update\\src",
+                "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\HTTPClient\\src",
+                "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\WiFiClientSecure\\src",
+                "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\HTTPUpdate\\src",
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\SPIFFS\\src",
                 "c:\\users\\lsali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\gcc8_4_0-esp-2021r2-patch5\\xtensa-esp32-elf\\include\\c++\\8.4.0",
                 "c:\\users\\lsali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\gcc8_4_0-esp-2021r2-patch5\\xtensa-esp32-elf\\include\\c++\\8.4.0\\xtensa-esp32-elf",

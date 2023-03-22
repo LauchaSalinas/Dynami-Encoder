@@ -2,10 +2,10 @@
 
 Dynami_Mediator::Dynami_Mediator() {}
 
-void Dynami_Mediator::setRefs
-(Dynami_Battery *bat,           Dynami_Bluetooth *bt,   Dynami_Buttons *btns, 
-Dynami_Display *dsp,            Dynami_Encoder *enc,    Dynami_EnergySave *engsv, 
-Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd, Dynami_Filesystem *file)
+void Dynami_Mediator::setRefs(Dynami_Battery *bat, Dynami_Bluetooth *bt, Dynami_Buttons *btns,
+                              Dynami_Display *dsp, Dynami_Encoder *enc, Dynami_EnergySave *engsv,
+                              Dynami_NotifyCenter *ntfcen, Dynami_Program *prgm, Dynami_Update *upd,
+                              Dynami_Filesystem *file, Dynami_Debug *debug)
 {
     dynamiBattery = bat;
     dynamiBluetooth = bt;
@@ -17,6 +17,7 @@ Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd, Dyna
     dynamiProgram = prgm;
     dynamiUpdate = upd;
     dynamiFilesystem = file;
+    dynamiDebug = debug;
     dynamiBattery->set_mediator(this);      // try to implement this later
     dynamiBluetooth->set_mediator(this);    // try to implement this later
     dynamiButtons->set_mediator(this);      // try to implement this later
@@ -27,6 +28,7 @@ Dynami_NotifyCenter *ntfcen,    Dynami_Program *prgm,   Dynami_Update *upd, Dyna
     dynamiProgram->set_mediator(this);      // try to implement this later
     dynamiUpdate->set_mediator(this);       // try to implement this later
     dynamiFilesystem->set_mediator(this);   // try to implement this later
+    dynamiDebug->set_mediator(this);        // try to implement this later
 }
 
 // BATTERY INITIATED EVENTS
@@ -48,8 +50,8 @@ void Dynami_Mediator::chargerStatusChanged()
 void Dynami_Mediator::cellsQtyChanged()
 {
     int cells = dynamiBattery->getCellsQty();
-    //char *debugCells = strcat("Cells: ", (char *)cells);
-    dynamiNotifyCenter->debugPrint("Cells: ",cells);
+    // char *debugCells = strcat("Cells: ", (char *)cells);
+    dynamiNotifyCenter->debugPrint("Cells: ", cells);
 }
 
 void Dynami_Mediator::batteryConnectionStatusChanged()
@@ -88,15 +90,12 @@ void Dynami_Mediator::button1ShortPress()
     dynamiNotifyCenter->debugPrint("Button 1 Short Press");
     // dynamiEnergySave->setEnergySaveMode(true); // needs refactor
     // dynamiNotifyCenter->debugPrint("setEnergySaveMode(true)");
-    dynamiUpdate->updateOTAWebServer();
 }
 
 void Dynami_Mediator::button2ShortPress()
 {
     dynamiNotifyCenter->debugPrint("Button 2 Short Press");
     // programDirectionChange();
-    getWifiCredentials();
-    dynamiUpdate->updateStopWifi();
 }
 
 void Dynami_Mediator::button1LongPress()
@@ -154,21 +153,10 @@ void Dynami_Mediator::programNewRep()
 void Dynami_Mediator::programRepCancelled()
 {
     long resetValue = dynamiEncoder->getEncoderValue();
-    //char *debugResetValue = strcat("Reset at: ", (char *)resetValue);
+    // char *debugResetValue = strcat("Reset at: ", (char *)resetValue);
     dynamiNotifyCenter->debugPrint("Reset: ", resetValue);
 }
 
-// UPDATER
-
-void Dynami_Mediator::getWifiCredentials()
-{
-    dynamiUpdate->ssid = dynamiFilesystem->getSSID();
-    dynamiUpdate->password = dynamiFilesystem->getPS();
-    dynamiNotifyCenter->debugPrint(dynamiUpdate->ssid);
-    dynamiNotifyCenter->debugPrint(dynamiUpdate->password);
-}
-
-// Not initiated events
 void Dynami_Mediator::programDirectionChange()
 {
     dynamiProgram->changeArrowDirection();
@@ -180,39 +168,97 @@ void Dynami_Mediator::programDirectionChange()
     dynamiDisplay->displayArrowChanged(); // refactor?
 }
 
-// DEBUGS
+// UPDATER
 
-// Velocity
+// getters setters (delete this?)
 
-// void Dynami_NotifyCenter::SerialNotifyVelocity(double Velocity) {
-//    Serial.print("MAX:");
-//    Serial.print(1);
-//    Serial.print(",");
-//    Serial.print("MIN:");
-//    Serial.print(0);
-//    Serial.print(",");
-//    Serial.print("Velocity:");
-//    Serial.println(Velocity);
-// }
+void Dynami_Mediator::UpdateDynami()
+{
+    // Checks if SSID is an available wifi in the area, if so, connect using the stored credentials.
+    // If stored password was incorrect of wifi not available , ask for the credentials, if connection is successful stores the wifi credentials.
+    // if update is unsuccessful, turns off wifi.
+    bool newCredentials = false;
+    // START
+    dynamiUpdate->StartWifi();
 
-// void Dynami_NotifyCenter::SerialNotifyDistance(double distance) {
-//   Serial.println(distance);
-// }
+    // GetStoredWifiCredentials();
+    dynamiUpdate->ssid = dynamiFilesystem->getSSID();
+    dynamiUpdate->password = dynamiFilesystem->getPS();
+    dynamiNotifyCenter->debugPrint(dynamiUpdate->ssid);
+    dynamiNotifyCenter->debugPrint(dynamiUpdate->password);
 
-// void Dynami_NotifyCenter::SerialNotifyBatteryLevel() {
-//   Serial.print("Analog = ");
-//   Serial.print(dynamiBattery->batteryValue);
-//   Serial.print("\t Voltage = ");
-//   Serial.print(dynamiBattery->batVoltage);
-//   Serial.print("\t Batt % = ");
-//   Serial.print(dynamiBattery->batPercentage);
-//   Serial.print("\t Cells = ");
-//   Serial.println(dynamiBattery->getCellsQty());
-// }
+    // Converts Arduino String to char * NEEDS REFACTOR, should be all char* not arduino strings
+    char charArray[dynamiUpdate->ssid.length() + 1];
+    dynamiUpdate->ssid.toCharArray(charArray, dynamiUpdate->ssid.length() + 1);
 
-// if (DEBUG_BATTERY) SerialNotifyBatteryLevel(); NEEDS DEVELOPMENT
+    // stores bool after wifi scan
+    // checks if ssid is in the wifi area
+    bool isSSIDAvaible = dynamiUpdate->CheckSSIDinAvailableSSIDs(charArray);
 
-// getters setters ??
+    // if SSID is not in the area checks for credentials
+    if (!isSSIDAvaible)
+    {
+        dynamiNotifyCenter->debugPrint("SSID not available");
+
+        // AskWifiCredentials();
+        // NEEDS DEVELOPMENT, meanwhile will be trought serial debug
+        dynamiNotifyCenter->debugPrint("new SSID:");
+        dynamiUpdate->ssid = "Upside24"; // dynamiDebug->AskNewString();
+        dynamiNotifyCenter->debugPrint(dynamiUpdate->ssid);
+
+        dynamiNotifyCenter->debugPrint("new PS");
+        dynamiUpdate->password = "1234223432344234"; // dynamiDebug->AskNewString();
+        dynamiNotifyCenter->debugPrint(dynamiUpdate->password);
+
+        newCredentials = true;
+    }
+
+    // ConnectWifi();
+    dynamiUpdate->ConnectWifi();
+
+    bool wifiConnected = dynamiUpdate->IsWifiConnected();
+    int tries = 2;
+    while (!wifiConnected && tries > 0)
+    {
+        dynamiUpdate->ConnectWifi();
+        dynamiNotifyCenter->debugPrint(dynamiUpdate->get_wifi_status());
+        wifiConnected = dynamiUpdate->IsWifiConnected();
+        tries--;
+    }
+    // if connection is successful and credentials are new, stores the wifi credentials.
+    if (wifiConnected)
+    {
+        dynamiNotifyCenter->debugPrint("Wifi is connected");
+        if (newCredentials)
+        {
+            // StoreWifiCredentials();
+            dynamiFilesystem->writeSSID(dynamiUpdate->ssid);
+            dynamiFilesystem->writePS(dynamiUpdate->password);
+        }
+
+        const float webVersion = dynamiUpdate->CheckWebVersion();
+        if (dynami_firmware_version_ < webVersion)
+        {
+            dynamiNotifyCenter->debugPrint("Theres a new version available, do you want to update? Y/N");
+            if (dynamiDebug->GetCharYN()){
+                dynamiUpdate->StartHTTPUpdate();
+            }
+            else{
+                dynamiNotifyCenter->debugPrint("Server update canceled, Starting OTA Server for manual upload");
+            }
+        }
+        
+        // Finally launches the update
+        // NEEDS development since it could be via http request , not server
+        dynamiUpdate->updateOTAWebServer();
+    }
+    // if update is unsuccessful, turns off wifi and closes the HTTP server
+    else
+    {
+        dynamiNotifyCenter->debugPrint("Was not able to connect to wifi");
+        dynamiUpdate->updateStopWifi();
+    }
+}
 
 bool Dynami_Mediator::getArrowDirectionUp()
 {

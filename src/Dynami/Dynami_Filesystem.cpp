@@ -21,16 +21,13 @@ String Dynami_Filesystem::getPS()
 }
 void Dynami_Filesystem::writeSSID(String newSSID)
 {
-    char * buf ;
-    newSSID.toCharArray(buf,33);
-    writeFile(SPIFFS,ssidPath,buf);
+    deleteFile(SPIFFS,ssidPath);
+    writeFile(SPIFFS,ssidPath,newSSID);
 }
 void Dynami_Filesystem::writePS(String newPS)
 {
-    char * buf ;
-    newPS.toCharArray(buf,33);
     deleteFile(SPIFFS,psPath);
-    writeFile(SPIFFS,psPath,buf);
+    writeFile(SPIFFS,psPath,newPS);
 }
 
 // PRIVATE
@@ -113,7 +110,7 @@ String Dynami_Filesystem::readSingleString(fs::FS &fs, const char *path){
 }
 
 
-void Dynami_Filesystem::writeFile(fs::FS &fs, const char *path, const char *message)
+void Dynami_Filesystem::writeFile(fs::FS &fs, const char *path, String message)
 {
     dynamiMediator->dynamiNotifyCenter->debugPrint("Writing file: ");
     dynamiMediator->dynamiNotifyCenter->debugPrint(path);

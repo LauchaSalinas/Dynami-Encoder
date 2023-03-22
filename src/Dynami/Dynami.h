@@ -12,6 +12,7 @@
 #include "Dynami_Mediator.h"
 #include "Dynami_Update.h"
 #include "Dynami_Filesystem.h"
+#include "Dynami_Debug.h"
 
 class Dynami
 {
@@ -32,6 +33,7 @@ private:
     Dynami_Mediator     dynamiMediator;
     Dynami_Update       dynamiUpdate;
     Dynami_Filesystem   dynamiFilesystem;
+    Dynami_Debug        dynamiDebug;
 };
 
 #endif

@@ -2,9 +2,10 @@
 
 Dynami::Dynami() : 
 dynamiProgram(),dynamiBattery(), dynamiBluetooth(), dynamiDisplay(), dynamiEnergySave(),
-dynamiEncoder(),dynamiButtons(),dynamiNotifyCenter(), dynamiMediator(), dynamiUpdate(), dynamiFilesystem()
+dynamiEncoder(),dynamiButtons(),dynamiNotifyCenter(), dynamiMediator(), dynamiUpdate(), 
+dynamiFilesystem(), dynamiDebug()
 {
-  dynamiMediator.setRefs(&dynamiBattery,&dynamiBluetooth, &dynamiButtons, &dynamiDisplay, &dynamiEncoder, &dynamiEnergySave, &dynamiNotifyCenter, &dynamiProgram, &dynamiUpdate, &dynamiFilesystem);
+  dynamiMediator.setRefs(&dynamiBattery,&dynamiBluetooth, &dynamiButtons, &dynamiDisplay, &dynamiEncoder, &dynamiEnergySave, &dynamiNotifyCenter, &dynamiProgram, &dynamiUpdate, &dynamiFilesystem, &dynamiDebug);
   dynamiEnergySave.setDisplayRef(&dynamiDisplay);
   dynamiDisplay.setEnergySaveRef(&dynamiEnergySave);
   dynamiProgram.setPointers(&dynamiEncoder);
@@ -20,6 +21,7 @@ void Dynami::dynamiSetup()
   dynamiBluetooth.BTSetup();
   dynamiEnergySave.startEnergySaveModeService();
   dynamiDisplay.displaySetup();
+  dynamiDebug.DebugStart();
 }
 
 void Dynami::dynamiLoop()
@@ -34,4 +36,5 @@ void Dynami::dynamiLoop()
   dynamiButtons.buttonsLoop();
   dynamiDisplay.displayLoop();
   dynamiEnergySave.energySaveLoop();
+  dynamiDebug.DebugLoop();
 }
