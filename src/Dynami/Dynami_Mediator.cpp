@@ -88,28 +88,56 @@ void Dynami_Mediator::bluetoothStartAdvertising()
 void Dynami_Mediator::button1ShortPress()
 {
     dynamiNotifyCenter->debugPrint("Button 1 Short Press");
-    // dynamiEnergySave->setEnergySaveMode(true); // needs refactor
-    // dynamiNotifyCenter->debugPrint("setEnergySaveMode(true)");
+    dynamiProgram->resetRepValues();
+    // dynamiDebug->set_debug_velocity_status(true);
+    // dynamiDebug->set_debug_distance_status(false);
 }
 
 void Dynami_Mediator::button2ShortPress()
 {
     dynamiNotifyCenter->debugPrint("Button 2 Short Press");
-    // programDirectionChange();
+    // dynamiDebug->set_debug_velocity_status(false);
+    // dynamiDebug->set_debug_distance_status(true);
+    
+    // dynamiProgram->distanceMeasurementFrec = dynamiProgram->distanceMeasurementFrec + 1000;
+    // dynamiProgram->velocityMeasurementFrec = dynamiProgram->distanceMeasurementFrec * 2;
+    // dynamiProgram->accelerationMeasurementFrec = dynamiProgram->velocityMeasurementFrec * 2;
+
+    dynamiProgram->velocityFilterFreq = dynamiProgram->velocityFilterFreq - 0.1F;
+    dynamiProgram->velocityLowPassFilter.setCutOffFreq(dynamiProgram->velocityFilterFreq);
+
+}
+
+void Dynami_Mediator::button3ShortPress()
+{
+    dynamiNotifyCenter->debugPrint("Button 3 Short Press");
+    dynamiProgram->velocityFilterFreq = dynamiProgram->velocityFilterFreq + 1.0F;
+    dynamiProgram->velocityLowPassFilter.setCutOffFreq(dynamiProgram->velocityFilterFreq);
+    
+
+
+    // dynamiProgram->distanceMeasurementFrec = 1000;
+    // dynamiProgram->distanceMeasurementFrec = dynamiProgram->distanceMeasurementFrec ;
+    // dynamiProgram->velocityMeasurementFrec = dynamiProgram->distanceMeasurementFrec ;
+    // dynamiProgram->accelerationMeasurementFrec = dynamiProgram->distanceMeasurementFrec ;
 }
 
 void Dynami_Mediator::button1LongPress()
 {
     dynamiNotifyCenter->debugPrint("Button 1 Long Press");
-    dynamiDisplay->turnOFFDisplay();
-    dynamiNotifyCenter->debugPrint("Display Turned OFF");
+    dynamiProgram->resetRepValues();
 }
 
 void Dynami_Mediator::button2LongPress()
 {
     dynamiNotifyCenter->debugPrint("Button 2 Long Press");
-    dynamiEnergySave->setEnergySaveMode(false);
-    dynamiNotifyCenter->debugPrint("setEnergySaveMode(false)");
+    dynamiProgram->velocityMeasurementFrec = dynamiProgram->velocityMeasurementFrec + 1;
+    Serial.println(dynamiProgram->velocityMeasurementFrec);
+}
+
+void Dynami_Mediator::button3LongPress()
+{
+    dynamiNotifyCenter->debugPrint("Button 3 Long Press");
 }
 
 // ENERGY SAVE
@@ -128,26 +156,27 @@ void Dynami_Mediator::energySaveModeChanged()
 // PROGRAM INITIATED EVENTS
 void Dynami_Mediator::programNewRep()
 {
-    int sets = dynamiProgram->getSets();
-    int actualRep = dynamiProgram->getActualRep();
-    int targetRep = dynamiProgram->getTargetRep();
-    long maxEncodedValue = dynamiEncoder->maxEncodedValue;
-    long encoderValue = dynamiEncoder->encoderValue;
-    int tiempoTotal = dynamiProgram->getTiempoTotal();
-    int tiempoPicoTotal = dynamiProgram->getTiempoPicoTotal();
-    int tiempoRetorno = dynamiProgram->getTiempoRetorno();
-    char *velocity = dynamiProgram->getVelocity();
-    dynamiNotifyCenter->SerialNotifyNewRep(sets, actualRep, targetRep, maxEncodedValue, encoderValue, tiempoTotal, tiempoPicoTotal, tiempoRetorno, velocity);
+    // DELETE int sets = dynamiProgram->getSets();
+    // DELETE int actualRep = dynamiProgram->getActualRep();
+    // DELETE int targetRep = dynamiProgram->getTargetRep();
+    //long maxEncodedValue = dynamiEncoder->maxEncodedValue;
+    //long encoderValue = dynamiEncoder->encoderValue;
+    // DELETE int tiempoTotal = dynamiProgram->getTiempoTotal();
+    // DELETE int tiempoPicoTotal = dynamiProgram->getTiempoPicoTotal();
+    // DELETE int tiempoRetorno = dynamiProgram->getTiempoRetorno();
+    // DELETE char *velocity = dynamiProgram->getVelocity();
+
+    // delete dynamiNotifyCenter->SerialNotifyNewRep(sets, actualRep, targetRep, maxEncodedValue, encoderValue, tiempoTotal, tiempoPicoTotal, tiempoRetorno, velocity);
     // Informs Energy Save to turn ON the display
     dynamiEnergySave->energySaveNewEvent();
 
     // Informs display to display data NEEDS DEVELOPMENT (repets prints)
-    dynamiDisplay->displayRep();
-    dynamiDisplay->displaySet();
-    dynamiDisplay->displayVelocity();
+    // DELETE dynamiDisplay->displayRep();
+    // DELETE dynamiDisplay->displaySet();
+    // DELETE dynamiDisplay->displayVelocity();
 
     // Informs BT to send new value data NEEDS DEVELOPMENT check here if device is connected
-    dynamiBluetooth->BTSendValue(velocity);
+    // dynamiBluetooth->BTSendValue();
 }
 
 void Dynami_Mediator::programRepCancelled()
@@ -236,21 +265,25 @@ void Dynami_Mediator::UpdateDynami()
             dynamiFilesystem->writePS(dynamiUpdate->password);
         }
 
-        const float webVersion = dynamiUpdate->CheckWebVersion();
+        const int webVersion = dynamiUpdate->CheckWebVersion();
         if (dynami_firmware_version_ < webVersion)
         {
             dynamiNotifyCenter->debugPrint("Theres a new version available, do you want to update? Y/N");
-            if (dynamiDebug->GetCharYN()){
+            if (dynamiDebug->GetCharYN())
+            {
                 dynamiUpdate->StartHTTPUpdate();
             }
-            else{
+            else
+            {
                 dynamiNotifyCenter->debugPrint("Server update canceled, Starting OTA Server for manual upload");
+                dynamiUpdate->updateOTAWebServer();
             }
         }
-        
-        // Finally launches the update
-        // NEEDS development since it could be via http request , not server
-        dynamiUpdate->updateOTAWebServer();
+        else
+        {
+            dynamiNotifyCenter->debugPrint("You're up to date, Starting OTA Server for manual upload");
+            dynamiUpdate->updateOTAWebServer();
+        }
     }
     // if update is unsuccessful, turns off wifi and closes the HTTP server
     else
