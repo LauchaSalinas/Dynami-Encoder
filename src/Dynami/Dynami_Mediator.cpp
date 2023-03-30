@@ -177,6 +177,9 @@ void Dynami_Mediator::programNewRep()
 
     // Informs BT to send new value data NEEDS DEVELOPMENT check here if device is connected
     // dynamiBluetooth->BTSendValue();
+
+
+
 }
 
 void Dynami_Mediator::programRepCancelled()
