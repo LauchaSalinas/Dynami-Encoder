@@ -12,9 +12,7 @@ void Dynami_Encoder::encoderSetup()
 void Dynami_Encoder::encoderLoop()
 {
     encoderValue = encoder.getCount() / 4;
-    //dynamiMediator->dynamiNotifyCenter->debugPrint("Enc: ", encoderValue);
-    //if (DEBUG_ENCODER) // NEEDS REFACTOR
-    //    Serial.println(encoderValue); //NEEDS REFACTOR
+    
 }
 
 void Dynami_Encoder::resetEncoderValue()

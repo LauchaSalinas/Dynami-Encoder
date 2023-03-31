@@ -13,6 +13,8 @@
 #include "Dynami_Update.h"
 #include "Dynami_Filesystem.h"
 #include "Dynami_Debug.h"
+#include "Dynami_Reps.h"
+
 
 class Dynami
 {
@@ -22,18 +24,23 @@ public:
     void dynamiLoop();
 
 private:
-    Dynami_Encoder      dynamiEncoder;
-    Dynami_Program      dynamiProgram;
-    Dynami_Battery      dynamiBattery;
-    Dynami_Bluetooth    dynamiBluetooth;
-    Dynami_Display      dynamiDisplay;
-    Dynami_Buttons      dynamiButtons;
-    Dynami_EnergySave   dynamiEnergySave;
+    Dynami_Encoder dynamiEncoder;
+    Dynami_Program dynamiProgram;
+    Dynami_Battery dynamiBattery;
+    Dynami_Bluetooth dynamiBluetooth;
+    Dynami_Display dynamiDisplay;
+    Dynami_Buttons dynamiButtons;
+    Dynami_EnergySave dynamiEnergySave;
     Dynami_NotifyCenter dynamiNotifyCenter;
-    Dynami_Mediator     dynamiMediator;
-    Dynami_Update       dynamiUpdate;
-    Dynami_Filesystem   dynamiFilesystem;
-    Dynami_Debug        dynamiDebug;
+    Dynami_Mediator dynamiMediator;
+    Dynami_Update dynamiUpdate;
+    Dynami_Filesystem dynamiFilesystem;
+    Dynami_Debug dynamiDebug;
+    Dynami_Reps dynamiReps;
 };
 
 #endif
+
+
+//NOTES
+/* Serial BT with high refresh rate is not available since it messes up with the internal clock and interrupt service of the ESP32 */

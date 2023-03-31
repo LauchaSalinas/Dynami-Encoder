@@ -10,6 +10,7 @@
 
 class Dynami_Mediator;
 
+
 class Dynami_Encoder // : public MediatedComponent
 {
 public:

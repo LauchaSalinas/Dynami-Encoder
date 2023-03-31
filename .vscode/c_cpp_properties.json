@@ -254,6 +254,7 @@
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\WiFiClientSecure\\src",
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\HTTPUpdate\\src",
                 "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\SPIFFS\\src",
+                "C:\\Users\\lsali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.6\\libraries\\BluetoothSerial\\src",
                 "c:\\users\\lsali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\gcc8_4_0-esp-2021r2-patch5\\xtensa-esp32-elf\\include\\c++\\8.4.0",
                 "c:\\users\\lsali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\gcc8_4_0-esp-2021r2-patch5\\xtensa-esp32-elf\\include\\c++\\8.4.0\\xtensa-esp32-elf",
                 "c:\\users\\lsali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\gcc8_4_0-esp-2021r2-patch5\\xtensa-esp32-elf\\include\\c++\\8.4.0\\backward",

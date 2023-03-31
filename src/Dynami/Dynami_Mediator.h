@@ -12,22 +12,7 @@
 #include "Dynami_Update.h"
 #include "Dynami_Filesystem.h"
 #include "Dynami_Debug.h"
-
-/**
- * The Base Component provides the basic functionality of storing a mediator's
- * instance inside component objects.
- */
-
-// class Dynami_Mediator;
-// class MediatedComponent
-// {
-// public:
-//     Dynami_Mediator *dynamiMediator;
-//     void set_mediator(Dynami_Mediator *mediator)
-//     {
-//         this->dynamiMediator = mediator;
-//     }
-// };
+#include "Dynami_Reps.h"
 
 class Dynami_Battery;
 class Dynami_Bluetooth;
@@ -40,12 +25,14 @@ class Dynami_Program;
 class Dynami_Update;
 class Dynami_Filesystem;
 class Dynami_Debug;
+struct rep;
+class Dynami_Reps;
 
 class Dynami_Mediator
 {
 public:
     Dynami_Mediator();
-    void setRefs(Dynami_Battery *, Dynami_Bluetooth *, Dynami_Buttons *, Dynami_Display *, Dynami_Encoder *, Dynami_EnergySave *, Dynami_NotifyCenter *, Dynami_Program *, Dynami_Update *, Dynami_Filesystem *, Dynami_Debug *);
+    void setRefs(Dynami_Battery *, Dynami_Bluetooth *, Dynami_Buttons *, Dynami_Display *, Dynami_Encoder *, Dynami_EnergySave *, Dynami_NotifyCenter *, Dynami_Program *, Dynami_Update *, Dynami_Filesystem *, Dynami_Debug *, Dynami_Reps *);
     void chargerStatusChanged();
     void cellsQtyChanged();
     void batteryConnectionStatusChanged();
@@ -56,8 +43,10 @@ public:
     // BUTTONS
     void button1ShortPress();
     void button2ShortPress();
+    void button3ShortPress();
     void button1LongPress();
     void button2LongPress();
+    void button3LongPress();
     // DISPLAY
     // ENERGYSAVE
     void energySaveModeChanged();
@@ -85,6 +74,7 @@ public:
     Dynami_Update *dynamiUpdate = NULL;
     Dynami_Filesystem *dynamiFilesystem = NULL;
     Dynami_Debug *dynamiDebug = NULL;
+    Dynami_Reps *dynamiReps = NULL;
 };
 
 #endif

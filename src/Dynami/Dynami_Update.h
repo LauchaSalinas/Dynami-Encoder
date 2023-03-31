@@ -11,7 +11,7 @@
 
 #include "Dynami_Mediator.h"
 
-#define dynami_firmware_version_ 0.1
+#define dynami_firmware_version_ 1
 
 class Dynami_Update
 {
@@ -33,7 +33,7 @@ public:
     void updateOTAWebServer();
     void updateStopWifi();
     bool CheckSSIDinAvailableSSIDs(const char *storedSSID);
-    float CheckWebVersion();
+    int CheckWebVersion();
     void StartHTTPUpdate();
 
 private:

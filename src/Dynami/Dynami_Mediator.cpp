@@ -5,7 +5,7 @@ Dynami_Mediator::Dynami_Mediator() {}
 void Dynami_Mediator::setRefs(Dynami_Battery *bat, Dynami_Bluetooth *bt, Dynami_Buttons *btns,
                               Dynami_Display *dsp, Dynami_Encoder *enc, Dynami_EnergySave *engsv,
                               Dynami_NotifyCenter *ntfcen, Dynami_Program *prgm, Dynami_Update *upd,
-                              Dynami_Filesystem *file, Dynami_Debug *debug)
+                              Dynami_Filesystem *file, Dynami_Debug *debug, Dynami_Reps *reps)
 {
     dynamiBattery = bat;
     dynamiBluetooth = bt;
@@ -18,6 +18,7 @@ void Dynami_Mediator::setRefs(Dynami_Battery *bat, Dynami_Bluetooth *bt, Dynami_
     dynamiUpdate = upd;
     dynamiFilesystem = file;
     dynamiDebug = debug;
+    dynamiReps = reps;
     dynamiBattery->set_mediator(this);      // try to implement this later
     dynamiBluetooth->set_mediator(this);    // try to implement this later
     dynamiButtons->set_mediator(this);      // try to implement this later
@@ -98,28 +99,71 @@ void Dynami_Mediator::button2ShortPress()
     dynamiNotifyCenter->debugPrint("Button 2 Short Press");
     // dynamiDebug->set_debug_velocity_status(false);
     // dynamiDebug->set_debug_distance_status(true);
-    
+
     // dynamiProgram->distanceMeasurementFrec = dynamiProgram->distanceMeasurementFrec + 1000;
     // dynamiProgram->velocityMeasurementFrec = dynamiProgram->distanceMeasurementFrec * 2;
     // dynamiProgram->accelerationMeasurementFrec = dynamiProgram->velocityMeasurementFrec * 2;
 
-    dynamiProgram->velocityFilterFreq = dynamiProgram->velocityFilterFreq - 0.1F;
-    dynamiProgram->velocityLowPassFilter.setCutOffFreq(dynamiProgram->velocityFilterFreq);
+    // dynamiProgram->velocityFilterFreq = dynamiProgram->velocityFilterFreq - 0.1F;
+    // dynamiProgram->velocityLowPassFilter.setCutOffFreq(dynamiProgram->velocityFilterFreq);
 
+    unsigned int repPosition = dynamiDisplay->getRepPosition() - 1; // 6
+    int repCounter = dynamiReps->GetRepCounter();                   // 5
+    rep newRep;
+    if (repPosition <= 0)
+        return;
+    // shows best if we are in mean screen
+    if (repPosition == repCounter + 2)
+    {
+        newRep = dynamiReps->GetRepBest();
+    }
+    if (repPosition <= repCounter + 1)
+    {
+        newRep = dynamiReps->GetRepInfo(repPosition - 1);
+    }
+
+    dynamiDisplay->displayRep(repPosition, repCounter + 1);
+    dynamiDisplay->displayROM(newRep.ROM);
+    dynamiDisplay->displayMPV(newRep.MPV);
+    dynamiDisplay->displayMV(newRep.MV);
+    dynamiDisplay->displayPV(newRep.PV);
+    dynamiDisplay->displayPower(newRep.Power);
 }
 
 void Dynami_Mediator::button3ShortPress()
 {
     dynamiNotifyCenter->debugPrint("Button 3 Short Press");
-    dynamiProgram->velocityFilterFreq = dynamiProgram->velocityFilterFreq + 1.0F;
-    dynamiProgram->velocityLowPassFilter.setCutOffFreq(dynamiProgram->velocityFilterFreq);
-    
-
+    // dynamiProgram->velocityFilterFreq = dynamiProgram->velocityFilterFreq + 1.0F;
+    // dynamiProgram->velocityLowPassFilter.setCutOffFreq(dynamiProgram->velocityFilterFreq);
 
     // dynamiProgram->distanceMeasurementFrec = 1000;
     // dynamiProgram->distanceMeasurementFrec = dynamiProgram->distanceMeasurementFrec ;
     // dynamiProgram->velocityMeasurementFrec = dynamiProgram->distanceMeasurementFrec ;
     // dynamiProgram->accelerationMeasurementFrec = dynamiProgram->distanceMeasurementFrec ;
+
+    unsigned int repPosition = dynamiDisplay->getRepPosition() - 1; // 7
+    int repCounter = dynamiReps->GetRepCounter();                   // 5
+    rep newRep;
+    if (repPosition >= repCounter + 2)
+        return;
+    if (repPosition == repCounter)
+    {
+        newRep = dynamiReps->GetRepBest();
+    }
+    if (repPosition == repCounter + 1)
+    {
+        newRep = dynamiReps->GetRepMean();
+    }
+    if (repPosition < repCounter)
+    {
+        newRep = dynamiReps->GetRepInfo(repPosition + 1);
+    }
+    dynamiDisplay->displayRep(repPosition + 1 + 1, repCounter + 1);
+    dynamiDisplay->displayROM(newRep.ROM);
+    dynamiDisplay->displayMPV(newRep.MPV);
+    dynamiDisplay->displayMV(newRep.MV);
+    dynamiDisplay->displayPV(newRep.PV);
+    dynamiDisplay->displayPower(newRep.Power);
 }
 
 void Dynami_Mediator::button1LongPress()
@@ -159,8 +203,8 @@ void Dynami_Mediator::programNewRep()
     // DELETE int sets = dynamiProgram->getSets();
     // DELETE int actualRep = dynamiProgram->getActualRep();
     // DELETE int targetRep = dynamiProgram->getTargetRep();
-    //long maxEncodedValue = dynamiEncoder->maxEncodedValue;
-    //long encoderValue = dynamiEncoder->encoderValue;
+    // long maxEncodedValue = dynamiEncoder->maxEncodedValue;
+    // long encoderValue = dynamiEncoder->encoderValue;
     // DELETE int tiempoTotal = dynamiProgram->getTiempoTotal();
     // DELETE int tiempoPicoTotal = dynamiProgram->getTiempoPicoTotal();
     // DELETE int tiempoRetorno = dynamiProgram->getTiempoRetorno();
@@ -171,15 +215,26 @@ void Dynami_Mediator::programNewRep()
     dynamiEnergySave->energySaveNewEvent();
 
     // Informs display to display data NEEDS DEVELOPMENT (repets prints)
-    // DELETE dynamiDisplay->displayRep();
-    // DELETE dynamiDisplay->displaySet();
     // DELETE dynamiDisplay->displayVelocity();
 
     // Informs BT to send new value data NEEDS DEVELOPMENT check here if device is connected
     // dynamiBluetooth->BTSendValue();
 
+    rep newRep{
+        dynamiProgram->getMPV(),
+        dynamiProgram->getMV(),
+        dynamiProgram->getPV(),
+        dynamiProgram->getROM(),
+        dynamiProgram->getPower()};
 
-
+    dynamiReps->AddNewRep(newRep);
+    int repCounter = dynamiReps->GetRepCounter();
+    dynamiDisplay->displayRep(repCounter + 1, repCounter + 1);
+    dynamiDisplay->displayROM(newRep.ROM);
+    dynamiDisplay->displayMPV(newRep.MPV);
+    dynamiDisplay->displayMV(newRep.MV);
+    dynamiDisplay->displayPV(newRep.PV);
+    dynamiDisplay->displayPower(newRep.Power);
 }
 
 void Dynami_Mediator::programRepCancelled()

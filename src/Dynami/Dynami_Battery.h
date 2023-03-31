@@ -3,53 +3,56 @@
 
 #include <Arduino.h>
 #include <ArduinoSort.h>
-#include "Dynami_Mediator.h"
+#include "Dynami_MediatedComponent.h"
 
-class Dynami_Mediator;
+#define batteryPin 36 // Analog input pin
+#define chargerPin 34 // Digital input pin
 
-class Dynami_Battery // : public MediatedComponent // try to implement this later
+
+class MediatedComponent;
+
+class Dynami_Battery : public MediatedComponent
 {
-  public:
-    Dynami_Battery();
-    Dynami_Mediator *dynamiMediator = NULL;
-    void set_mediator(Dynami_Mediator *mediator) {this->dynamiMediator = mediator;}
-    void batterySetup();
-    void batteryLoop();
-    void checkVoltage();
-    bool isBatteryConnected(); //*
-    void batteryConnectionStatusChanged();
-    bool isChargerConnected();
-    void chargerStatusChanged();
-    void updateBatPercToCells();
-    void batPercentageToCells();
+public:
+  Dynami_Battery();
+  void batterySetup();
+  void batteryLoop();
+  bool isBatteryConnected();
+  
+  // Getters & Setters
+  int   getCellsQty();
+  bool  getBatteryConnectionStatus();
+  bool  getChargerStatus();
+  int   getBatteryValue();
+  float getBatVoltageValue();
+  int   getBatPercentage();
 
-    // Getters & Setters
-    int getCellsQty(); //*
-    bool getBatteryConnectionStatus(); //*
-    bool getChargerStatus(); //*
-    int batteryPin = 36; // Analog input pin
-    int chargerPin = 34;
-    int batteryValueArr[10]; // Analog Output of Sensor
-    int batteryValue; //*
-    float batVoltage;
-    int batPercentage = 0;
-    int cellsQty = 0;
-    unsigned long voltageLastCheckTime = 0; // Battery voltage last check time
-    int voltageFrecuencyCheck = 10000;
+private:
+  int batteryValue;
+  float batVoltage;
+  int batPercentage;
+  int cellsQty = 0;
+  bool chargerConnected = false;
+  unsigned long voltageLastCheckTime = 0; // Battery voltage last check time
+  int voltageFrecuencyCheck = 10000;
+  bool chargerLastStatus = false;
+  bool chargerPinReading = false;
 
-    // battery connected checks
-    bool batConnected = true;
-    bool batConnectedLast = true;
-    unsigned long batteryConnectedLastCheckTime = 0; // Battery voltage last check time
-    int batteryConnectedFrecuencyCheck = 1000;
+  //Private Methods
+  void checkVoltage();
+  bool isChargerConnected();
+  void batPercentageToCells();
 
-    bool chargerConnected = false;
+  //External Notifiers
+  void updateBatPercToCells();
+  void chargerStatusChanged();
+  void batteryConnectionStatusChanged();
 
-    byte chargerLastStatus = LOW; // fix this later; same as battery
-    byte chargerPinReading = LOW;
-    
-  private:
-
+  // battery connected checks
+  bool batConnected = true;
+  bool batConnectedLast = true;
+  unsigned long batteryConnectedLastCheckTime = 0; // Battery voltage last check time
+  int batteryConnectedFrecuencyCheck = 1000;
 };
 
 #endif

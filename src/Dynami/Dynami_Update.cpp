@@ -82,7 +82,8 @@ void Dynami_Update::updateOTAWebServer()
     dynamiMediator->dynamiNotifyCenter->debugPrint("Connected to ");
     dynamiMediator->dynamiNotifyCenter->debugPrint(ssid);
     dynamiMediator->dynamiNotifyCenter->debugPrint("IP address: ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(WiFi.localIP().toString().c_str());
+    String str = WiFi.localIP().toString().c_str();
+    dynamiMediator->dynamiNotifyCenter->debugPrint(str+"/update");
 
     // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     //           { request->send(200, "text/plain", "Hi! I am ESP32."); });
@@ -183,9 +184,9 @@ char *Dynami_Update::get_wifi_status()
     }
 }
 
-float Dynami_Update::CheckWebVersion()
+int Dynami_Update::CheckWebVersion()
 {
-    float version = 0;
+    int version = 0;
 
     Serial.print("[HTTP] begin...\n");
     Serial.println(update_server_ + last_version_path_);
@@ -207,7 +208,7 @@ float Dynami_Update::CheckWebVersion()
             String payload = http.getString();
             last_version_path_ = payload + ".bin";
             Serial.println(payload);
-            version = atof(payload.c_str());
+            version = atoi(payload.c_str());
         }
     }
     else

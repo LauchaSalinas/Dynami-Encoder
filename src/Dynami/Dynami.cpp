@@ -1,11 +1,10 @@
 #include "Dynami.h"
 
-Dynami::Dynami() : 
-dynamiProgram(),dynamiBattery(), dynamiBluetooth(), dynamiDisplay(), dynamiEnergySave(),
-dynamiEncoder(),dynamiButtons(),dynamiNotifyCenter(), dynamiMediator(), dynamiUpdate(), 
-dynamiFilesystem(), dynamiDebug()
+Dynami::Dynami() : dynamiProgram(), dynamiBattery(), dynamiBluetooth(), dynamiDisplay(), dynamiEnergySave(),
+                   dynamiEncoder(), dynamiButtons(), dynamiNotifyCenter(), dynamiMediator(), dynamiUpdate(),
+                   dynamiFilesystem(), dynamiDebug(), dynamiReps()
 {
-  dynamiMediator.setRefs(&dynamiBattery,&dynamiBluetooth, &dynamiButtons, &dynamiDisplay, &dynamiEncoder, &dynamiEnergySave, &dynamiNotifyCenter, &dynamiProgram, &dynamiUpdate, &dynamiFilesystem, &dynamiDebug);
+  dynamiMediator.setRefs(&dynamiBattery, &dynamiBluetooth, &dynamiButtons, &dynamiDisplay, &dynamiEncoder, &dynamiEnergySave, &dynamiNotifyCenter, &dynamiProgram, &dynamiUpdate, &dynamiFilesystem, &dynamiDebug, &dynamiReps);
   dynamiEnergySave.setDisplayRef(&dynamiDisplay);
   dynamiDisplay.setEnergySaveRef(&dynamiEnergySave);
   dynamiProgram.setPointers(&dynamiEncoder);
@@ -26,10 +25,11 @@ void Dynami::dynamiSetup()
 
 void Dynami::dynamiLoop()
 {
-  dynamiProgram.repControl(); 
-  dynamiProgram.repMeasurement();
-  dynamiProgram.velocityMeasurament();
   dynamiProgram.distanceMeasurement();
+  dynamiProgram.velocityMeasurament();
+  dynamiProgram.accelerationMeasurament();
+  dynamiProgram.resetDetector();
+  dynamiProgram.repControl3();
   dynamiEncoder.encoderLoop();
   dynamiBattery.batteryLoop();
   dynamiBluetooth.BTLoop();
