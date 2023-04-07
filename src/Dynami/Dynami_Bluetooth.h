@@ -37,12 +37,15 @@ public:
 };
 #endif
 
-class Dynami_Bluetooth // : public MediatedComponent
+#include "./abstractions/BaseComponent.h"
+#include "./abstractions/Mediator.h"
+
+class Dynami_Bluetooth : public BaseComponent
 {
 public:
     Dynami_Bluetooth();
-    Dynami_Mediator *dynamiMediator = NULL;
-    void set_mediator(Dynami_Mediator *mediator) { this->dynamiMediator = mediator; }
+    // Dynami_Mediator *dynamiMediator = NULL;
+    // void set_mediator(Dynami_Mediator *mediator) { this->dynamiMediator = mediator; }
     #if DEBUG == false
     BLEServer *pServer = NULL;
     BLECharacteristic *pCharacteristic = NULL;

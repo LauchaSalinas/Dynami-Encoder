@@ -8,8 +8,9 @@ void Dynami_Update::StartWifi()
     delay(1000);
 }
 
-void Dynami_Update::ConnectWifi()
+bool Dynami_Update::ConnectWifi()
 {
+    StartWifi();
     Serial.begin(115200);
     // needs to check if no ssid was declared
     Serial.println();
@@ -22,7 +23,7 @@ void Dynami_Update::ConnectWifi()
     //    WiFi.setAutoReconnect(false);
 
     // Will try for about 10 seconds (20x 500ms)
-    int tryDelay = 500;
+    int tryDelay = 1000;
     int numberOfTries = 20;
 
     // Wait for the WiFi event
@@ -36,7 +37,7 @@ void Dynami_Update::ConnectWifi()
             break;
         case WL_CONNECT_FAILED:
             Serial.print("[WiFi] Failed - WiFi not connected! Reason: ");
-            return;
+            return false;
             break;
         case WL_CONNECTION_LOST:
             Serial.println("[WiFi] Connection was lost");
@@ -51,7 +52,7 @@ void Dynami_Update::ConnectWifi()
             Serial.println("[WiFi] WiFi is connected!");
             Serial.print("[WiFi] IP address: ");
             Serial.println(WiFi.localIP());
-            return;
+            return true;
             break;
         default:
             Serial.print("[WiFi] WiFi Status: ");
@@ -65,7 +66,7 @@ void Dynami_Update::ConnectWifi()
             Serial.print("[WiFi] Failed to connect to WiFi!");
             // Use disconnect function to force stop trying to connect
             WiFi.disconnect();
-            return;
+            return false;
         }
         else
         {
@@ -79,18 +80,18 @@ void Dynami_Update::updateOTAWebServer()
     server = new AsyncWebServer(80);
     ElegantOTA = new AsyncElegantOtaClass();
 
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Connected to ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(ssid);
-    dynamiMediator->dynamiNotifyCenter->debugPrint("IP address: ");
+    Serial.println("Connected to ");
+    Serial.println(ssid);
+    Serial.println("IP address: ");
     String str = WiFi.localIP().toString().c_str();
-    dynamiMediator->dynamiNotifyCenter->debugPrint(str+"/update");
+    Serial.println(str + "/update");
 
     // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     //           { request->send(200, "text/plain", "Hi! I am ESP32."); });
 
     ElegantOTA->begin(server); // Start ElegantOTA
     server->begin();
-    dynamiMediator->dynamiNotifyCenter->debugPrint("HTTP server started");
+    Serial.println("HTTP server started");
 }
 
 void Dynami_Update::updateOTAWebServerClose()
@@ -101,16 +102,17 @@ void Dynami_Update::updateOTAWebServerClose()
     ElegantOTA = NULL;
 }
 
-void Dynami_Update::updateStopWifi()
+void Dynami_Update::TurnOffWifi()
 {
     WiFi.disconnect();
+    WiFi.enableSTA(false);
 }
 
 bool Dynami_Update::CheckSSIDinAvailableSSIDs(const char *storedSSID)
 {
     // WiFi.scanNetworks will return the number of networks found.
     int n = WiFi.scanNetworks();
-    dynamiMediator->dynamiNotifyCenter->debugPrint("n networks: ", n);
+    Serial.println("n networks: " + n);
     if (n == 0)
     {
         // no networks found
@@ -120,16 +122,43 @@ bool Dynami_Update::CheckSSIDinAvailableSSIDs(const char *storedSSID)
     {
         for (int i = 0; i < n; ++i)
         {
-            dynamiMediator->dynamiNotifyCenter->debugPrint(WiFi.SSID(i));
+            Serial.println(WiFi.SSID(i));
             if (strcmp(WiFi.SSID(i).c_str(), storedSSID) == 0)
             {
-                dynamiMediator->dynamiNotifyCenter->debugPrint("Found SSID");
+                Serial.println("Found SSID");
                 // Delete the scan result to free memory.
                 WiFi.scanDelete();
                 return true;
             }
         }
         return false;
+    }
+}
+
+void Dynami_Update::ScanSSID()
+{
+    // WiFi.scanNetworks will return the number of networks found.
+    int n = WiFi.scanNetworks();
+    if (n == 0)
+    {
+        // no networks found
+        nNetworks = 0;
+        return;
+    }
+    else
+    {
+        nNetworks = 4;
+        delay(50);
+        for (int i = 0; i < n; i++)
+        {
+            //Serial.println(WiFi.SSID(i));
+            if (i < 4)
+            {
+                Serial.println(WiFi.SSID(i).c_str());
+                AvailableSSIDs.push_back(WiFi.SSID(i)) ;
+            }
+        }
+        //WiFi.scanDelete();
     }
 }
 

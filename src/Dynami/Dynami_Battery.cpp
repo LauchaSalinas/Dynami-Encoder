@@ -49,6 +49,21 @@ void Dynami_Battery::batteryLoop()
   batteryConnectionStatusChanged();
 }
 
+/**
+ * @brief Install PCNT ISR service.
+ * @note We can manage different interrupt service for each unit.
+ *       This function will use the default ISR handle service, Calling pcnt_isr_service_uninstall to
+ *       uninstall the default service if needed. Please do not use pcnt_isr_register if this function was called.
+ *
+ * @param intr_alloc_flags Flags used to allocate the interrupt. One or multiple (ORred)
+ *        ESP_INTR_FLAG_* values. See esp_intr_alloc.h for more info.
+ *
+ * @return
+ *     - ESP_OK Success
+ *     - ESP_ERR_INVALID_STATE pcnt driver has not been initialized
+ *     - ESP_ERR_NO_MEM No memory to install this service
+ *     - ESP_ERR_INVALID_STATE ISR service already installed
+ */
 void Dynami_Battery::checkVoltage()
 {
   int batteryValueArr[10];
@@ -75,7 +90,7 @@ void Dynami_Battery::batteryConnectionStatusChanged()
 {
   if (batConnected != batConnectedLast)
   {
-    dynamiMediator->batteryConnectionStatusChanged();
+    dynamiMediator->Notify(this, "batteryConnectionStatusChanged");
 
     batConnectedLast = batConnected;
   }
@@ -93,7 +108,7 @@ void Dynami_Battery::chargerStatusChanged()
 {
   if (chargerPinReading != chargerLastStatus)
   {
-    dynamiMediator->chargerStatusChanged();
+    dynamiMediator->Notify(this, "chargerStatusChanged");
     chargerLastStatus = chargerPinReading;
   }
 }
@@ -106,63 +121,16 @@ void Dynami_Battery::updateBatPercToCells()
   if (batPercentage >= (cellsQty * 20) + upperTreshold)
   {
     cellsQty++;
-    dynamiMediator->cellsQtyChanged();
+    dynamiMediator->Notify(this, "cellsQtyChanged");
   }
   else if (batPercentage <= ((cellsQty - 1) * 20) - lowerTreshold)
   {
     cellsQty--;
-    dynamiMediator->cellsQtyChanged();
+    dynamiMediator->Notify(this,"cellsQtyChanged");
   }
 }
 
 void Dynami_Battery::batPercentageToCells()
 {
   cellsQty = map(batPercentage, 0, 100, 1, 5);
-}
-
-// Getters & Setters
-
-int Dynami_Battery::getCellsQty()
-{
-  return cellsQty;
-}
-
-bool Dynami_Battery::getBatteryConnectionStatus()
-{
-  return batConnected;
-}
-
-bool Dynami_Battery::getChargerStatus()
-{
-  return chargerConnected;
-}
-
-/**
- * @brief Install PCNT ISR service.
- * @note We can manage different interrupt service for each unit.
- *       This function will use the default ISR handle service, Calling pcnt_isr_service_uninstall to
- *       uninstall the default service if needed. Please do not use pcnt_isr_register if this function was called.
- *
- * @param intr_alloc_flags Flags used to allocate the interrupt. One or multiple (ORred)
- *        ESP_INTR_FLAG_* values. See esp_intr_alloc.h for more info.
- *
- * @return
- *     - ESP_OK Success
- *     - ESP_ERR_INVALID_STATE pcnt driver has not been initialized
- *     - ESP_ERR_NO_MEM No memory to install this service
- *     - ESP_ERR_INVALID_STATE ISR service already installed
- */
-int Dynami_Battery::getBatteryValue()
-{
-  return this->batteryValue;
-}
-
-float Dynami_Battery::getBatVoltageValue()
-{
-  return this->batVoltage;
-}
-
-int Dynami_Battery::getBatPercentage()
-{
-  return this->batPercentage;
 }

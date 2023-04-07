@@ -4,15 +4,7 @@
 // #include "Dynami_Mediator.h"
 // class Dynami_Mediator; // probably not neccesary
 #include <vector>
-
-struct rep
-{
-    double MPV;
-    double MV;
-    double PV;
-    double ROM;
-    int Power;
-};
+#include "./resources/Rep.h"
 
 class Dynami_Reps
 {
@@ -21,6 +13,7 @@ public:
     void AddNewRep(double newRepMPV, double newRepMV, double newRepPV, double newRepROM, unsigned int newRepPower);
     void AddNewRep(rep newRep);
     void DeleteRep(unsigned int index);
+    void DeleteAllReps();
     rep GetRepInfo(unsigned int index);
     int GetRepCounter() { return this->repCounter; }
     rep GetRepMean(){return meanRep;}

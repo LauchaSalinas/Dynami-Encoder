@@ -12,7 +12,6 @@
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 #define OLED_RESET -1    //   QT-PY / XIAO
 
-
 // 'Untitled', 12x19px
 #define LOGO16_HEIGHT 19
 #define LOGO16_WIDTH 12
@@ -35,7 +34,9 @@ public:
     Dynami_EnergySave *dynamiEnergySave = NULL;
     void setEnergySaveRef(Dynami_EnergySave *);
     Dynami_Mediator *dynamiMediator = NULL;
-    void set_mediator(Dynami_Mediator *mediator) { this->dynamiMediator = mediator; }
+    void set_mediator(Dynami_Mediator *mediator) { this->dynamiMediator = mediator; };
+    uint8_t *displayBuffer = NULL;
+    uint8_t *getCopyBuffer(void) { return displayBuffer; };
     void displaySetup();
     void displayLoop();
     void displayTemplate();
@@ -46,28 +47,18 @@ public:
     void displayRep(unsigned int reps, unsigned int totalReps);
     void displayROM(double ROM);
     void displayPower(double Power);
-
     void turnOFFDisplay();
-
     void turnONDisplay();
-
     void displayBT();
-
     void displayBTOFF();
     void displayEmptyBattery();
-
     void clearBatteryIcon();
-
     void clearBatteryCells();
     void displayBatteryNotCharging();
-
     void blinkLastCell();
     void displayBatteryCharging();
-
     void displayBatteryChargingService();
-
     void batteryDisplayStatusChanged();
-
     void setDisplayBatteryCharging(bool);
 
     void displayBattery();
@@ -78,6 +69,9 @@ public:
 
     void displayArrow();
 
+    // Update
+    void displayKeyboard();
+
     // Globals
     int blinkTime = 700;
 
@@ -86,7 +80,23 @@ public:
     bool boolDisplayBatteryChargingLast = false;
     unsigned long batteryCellBlinkLastCheckTime = 0; // Battery voltage last check time
     int chargingCellsQty = 0;
-    unsigned int getRepPosition (void){return repPosition;};
+    unsigned int getRepPosition(void) { return repPosition; };
+
+    char c = 21;
+    char mode = 1 ; 
+    
+    //menu
+    void ShowMenuTitle(String);
+    void ShowMenuOptions(int options, String* optionsTitles);
+    void ShowCursor(int options, int cursorPos);
+
+    //Weight input
+    void ShowSelectedValueWeight(int currentPos,int weight);
+    void ShowNumberCursor(int numberCursor);
+
+    //Character String Selection
+    void ShowSelectedCharacterString(int currentPos,char inputStr);
+    void ShowCharCursor(char charCursor);
 
 private:
     unsigned int repPosition = 0;

@@ -4,7 +4,7 @@ Dynami_Filesystem::Dynami_Filesystem()
 {
     if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("SPIFFS Mount Failed");
+        Serial.println("SPIFFS Mount Failed");
         return;
     }
 }
@@ -34,18 +34,18 @@ void Dynami_Filesystem::writePS(String newPS)
 
 void Dynami_Filesystem::listDir(fs::FS &fs, const char *dirname, uint8_t levels)
 {
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Listing directory: ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(dirname);
+    Serial.println("Listing directory: ");
+    Serial.println(dirname);
 
     File root = fs.open(dirname);
     if (!root)
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open directory");
+        Serial.println("- failed to open directory");
         return;
     }
     if (!root.isDirectory())
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint(" - not a directory");
+        Serial.println(" - not a directory");
         return;
     }
 
@@ -54,8 +54,8 @@ void Dynami_Filesystem::listDir(fs::FS &fs, const char *dirname, uint8_t levels)
     {
         if (file.isDirectory())
         {
-            dynamiMediator->dynamiNotifyCenter->debugPrint("  DIR : ");
-            dynamiMediator->dynamiNotifyCenter->debugPrint(file.name());
+            Serial.println("  DIR : ");
+            Serial.println(file.name());
             if (levels)
             {
                 listDir(fs, file.path(), levels - 1);
@@ -63,10 +63,10 @@ void Dynami_Filesystem::listDir(fs::FS &fs, const char *dirname, uint8_t levels)
         }
         else
         {
-            dynamiMediator->dynamiNotifyCenter->debugPrint("  FILE: ");
-            dynamiMediator->dynamiNotifyCenter->debugPrint(file.name());
-            dynamiMediator->dynamiNotifyCenter->debugPrint("\tSIZE: ");
-            dynamiMediator->dynamiNotifyCenter->debugPrint((int)file.size());
+            Serial.println("  FILE: ");
+            Serial.println(file.name());
+            Serial.println("\tSIZE: ");
+            Serial.println((int)file.size());
         }
         file = root.openNextFile();
     }
@@ -79,11 +79,11 @@ void Dynami_Filesystem::readFile(fs::FS &fs, const char *path)
     File file = fs.open(path);
     if (!file || file.isDirectory())
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open file for reading");
+        Serial.println("- failed to open file for reading");
         return;
     }
 
-    dynamiMediator->dynamiNotifyCenter->debugPrint("- read from file:");
+    Serial.println("- read from file:");
     while (file.available())
     {
         Serial.write(file.read());
@@ -96,11 +96,11 @@ String Dynami_Filesystem::readSingleString(fs::FS &fs, const char *path){
     File file = fs.open(path);
     if (!file || file.isDirectory())
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open file for reading");
+        Serial.println("- failed to open file for reading");
         return str;
     }
 
-    dynamiMediator->dynamiNotifyCenter->debugPrint("- read from file:");
+    Serial.println("- read from file:");
     while (file.available())
     {
         str = file.readString();
@@ -112,104 +112,104 @@ String Dynami_Filesystem::readSingleString(fs::FS &fs, const char *path){
 
 void Dynami_Filesystem::writeFile(fs::FS &fs, const char *path, String message)
 {
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Writing file: ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(path);
+    Serial.println("Writing file: ");
+    Serial.println(path);
 
     File file = fs.open(path, FILE_WRITE);
     if (!file)
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open file for writing");
+        Serial.println("- failed to open file for writing");
         return;
     }
     if (file.print(message))
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- file written");
+        Serial.println("- file written");
     }
     else
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- write failed");
+        Serial.println("- write failed");
     }
     file.close();
 }
 
 void Dynami_Filesystem::appendFile(fs::FS &fs, const char *path, const char *message)
 {
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Appending to file: ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(path);
+    Serial.println("Appending to file: ");
+    Serial.println(path);
 
     File file = fs.open(path, FILE_APPEND);
     if (!file)
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open file for appending");
+        Serial.println("- failed to open file for appending");
         return;
     }
     if (file.print(message))
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- message appended");
+        Serial.println("- message appended");
     }
     else
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- append failed");
+        Serial.println("- append failed");
     }
     file.close();
 }
 
 void Dynami_Filesystem::renameFile(fs::FS &fs, const char *path1, const char *path2)
 {
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Renaming file ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(path1);
-    dynamiMediator->dynamiNotifyCenter->debugPrint(" to ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(path2);
+    Serial.println("Renaming file ");
+    Serial.println(path1);
+    Serial.println(" to ");
+    Serial.println(path2);
     if (fs.rename(path1, path2))
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- file renamed");
+        Serial.println("- file renamed");
     }
     else
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- rename failed");
+        Serial.println("- rename failed");
     }
 }
 
 void Dynami_Filesystem::deleteFile(fs::FS &fs, const char *path)
 {
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Deleting file:");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(path);
+    Serial.println("Deleting file:");
+    Serial.println(path);
     if (fs.remove(path))
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- file deleted");
+        Serial.println("- file deleted");
     }
     else
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- delete failed");
+        Serial.println("- delete failed");
     }
 }
 
 void Dynami_Filesystem::testFileIO(fs::FS &fs, const char *path)
 {
-    dynamiMediator->dynamiNotifyCenter->debugPrint("Testing file I/O with ");
-    dynamiMediator->dynamiNotifyCenter->debugPrint(path);
+    Serial.println("Testing file I/O with ");
+    Serial.println(path);
 
     static uint8_t buf[512];
     size_t len = 0;
     File file = fs.open(path, FILE_WRITE);
     if (!file)
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open file for writing");
+        Serial.println("- failed to open file for writing");
         return;
     }
 
     size_t i;
-    dynamiMediator->dynamiNotifyCenter->debugPrint("- writing");
+    Serial.println("- writing");
     uint32_t start = millis();
     for (i = 0; i < 2048; i++)
     {
         if ((i & 0x001F) == 0x001F)
         {
-            dynamiMediator->dynamiNotifyCenter->debugPrint(".");
+            Serial.println(".");
         }
         file.write(buf, 512);
     }
-    dynamiMediator->dynamiNotifyCenter->debugPrint("");
+    Serial.println("");
     uint32_t end = millis() - start;
     //Serial.printf(" - %u bytes written in %u ms\r\n", 2048 * 512, end);
     file.close();
@@ -223,7 +223,7 @@ void Dynami_Filesystem::testFileIO(fs::FS &fs, const char *path)
         len = file.size();
         size_t flen = len;
         start = millis();
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- reading");
+        Serial.println("- reading");
         while (len)
         {
             size_t toRead = len;
@@ -234,17 +234,17 @@ void Dynami_Filesystem::testFileIO(fs::FS &fs, const char *path)
             file.read(buf, toRead);
             if ((i++ & 0x001F) == 0x001F)
             {
-                dynamiMediator->dynamiNotifyCenter->debugPrint(".");
+                Serial.println(".");
             }
             len -= toRead;
         }
-        dynamiMediator->dynamiNotifyCenter->debugPrint("");
+        Serial.println("");
         end = millis() - start;
-        //dynamiMediator->dynamiNotifyCenter->debugPrint("- %u bytes read in %u ms\r\n", flen, end);
+        //Serial.println("- %u bytes read in %u ms\r\n", flen, end);
         file.close();
     }
     else
     {
-        dynamiMediator->dynamiNotifyCenter->debugPrint("- failed to open file for reading");
+        Serial.println("- failed to open file for reading");
     }
 }

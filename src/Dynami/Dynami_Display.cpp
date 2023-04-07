@@ -2,6 +2,7 @@
 
 Dynami_Display::Dynami_Display()
 {
+  displayBuffer = (uint8_t *)malloc(1024);
 }
 
 void Dynami_Display::setEnergySaveRef(Dynami_EnergySave *esref)
@@ -100,20 +101,21 @@ void Dynami_Display::displayTemplate()
 
   display.setCursor(0, 57);
   display.setTextSize(1);
-  display.print("RSET");
+  display.print("PREV");
 
   display.setCursor(45, 57);
   display.setTextSize(1);
-  display.print("PREV");
+  display.print("RSET");
 
   display.setCursor(85, 57);
   display.setTextSize(1);
   display.print("NEXT");
-
   display.display();
-  // displayRep();
+
   displayBattery();
   displayArrow();
+
+  memcpy(getCopyBuffer(), display.getBuffer(), 1024);
 }
 
 void Dynami_Display::displayMPV(double MPV)
@@ -153,11 +155,11 @@ void Dynami_Display::displayRep(unsigned int reps, unsigned int totalReps)
   {
     display.printf("%02d/%02d", reps, totalReps);
   }
-  if (reps == totalReps+ 1)
+  if (reps == totalReps + 1)
   {
     display.printf("%s", "BEST");
   }
-  if (reps == totalReps+ 2)
+  if (reps == totalReps + 2)
   {
     display.printf("%s", "MEAN");
   }
@@ -308,7 +310,7 @@ void Dynami_Display::clearArrow()
 
 void Dynami_Display::displayArrow()
 {
-  bool directionUp = dynamiMediator->getArrowDirectionUp(); // NEEDS REFACTOR
+  bool directionUp = true; // dynamiMediator->getArrowDirectionUp(); // NEEDS REFACTOR
 
   int x, y, d;
   if (!directionUp)
@@ -356,4 +358,111 @@ void Dynami_Display::displayArrow()
     display.drawFastVLine((-5 + 11) * d + x, 4 * d + y + offd + (i * d * 6), drawLenght, 1);
   }
   dynamiEnergySave->energySaveModeDisplay();
+}
+
+// update
+
+void Dynami_Display::displayKeyboard()
+{
+  display.setTextSize(1);
+  display.setCursor(50, 50);
+  char c = (char)35;
+  display.printf("%c", c);
+}
+
+// Menu
+
+void Dynami_Display::ShowMenuTitle(String menuTitle)
+{
+  display.setCursor(0, 0);
+  display.setTextSize(2);
+  display.println(menuTitle);
+  display.display();
+}
+
+void Dynami_Display::ShowMenuOptions(int options, String *optionTitles)
+{
+  display.setCursor(0, 25);
+  display.setTextSize(1);
+  for (int i = 0; i < options; i++)
+  {
+    display.printf("  %.17s\n", optionTitles[i].c_str());
+  }
+  display.display();
+}
+
+void Dynami_Display::ShowCursor(int options, int cursorPos)
+{
+  display.fillRect(0, 25, 10, 64, 0);
+  display.setCursor(0, 25);
+  display.setTextSize(1);
+  for (int i = 0; i < options; i++)
+  {
+    if (i == cursorPos)
+    {
+      display.println(">");
+      break;
+    }
+    else
+      display.println("");
+  }
+  display.display();
+}
+
+//Number selection
+
+void Dynami_Display::ShowSelectedValueWeight(int currentPos, int weight)
+{
+  display.fillRect(45, 25, 30, 20, 0);
+  display.setCursor(45, 25);
+  display.setTextSize(2);
+  switch (currentPos)
+  {
+  case 0:
+    display.printf("___");
+    break;
+  case 1:
+    display.printf("%01d__", weight);
+    break;
+  case 2:
+    display.printf("%02d_", weight);
+    break;
+  case 3:
+    display.printf("%03d", weight);
+    break;
+  }
+  display.display();
+}
+
+void Dynami_Display::ShowNumberCursor(int numberCursor)
+{
+  display.fillRect(57, 47, 10, 14, 0);
+  display.setCursor(57, 47);
+  display.setTextSize(2);
+  display.printf("%d", numberCursor);
+  display.display();
+}
+
+//Character selection
+void Dynami_Display::ShowSelectedCharacterString(int currentPos, char inputStr)
+{
+  display.fillRect(10, 25, 118, 10, 0);
+  display.setCursor(10, 25);
+  display.setTextSize(1);
+  for (int i=0; i < currentPos-1; i++)
+  {
+    display.print("*");
+  }
+  if (currentPos == 0) display.printf("_");
+  else display.printf("%c_",inputStr);
+  display.display();
+}
+
+void Dynami_Display::ShowCharCursor(char charCursor)
+{
+  display.fillRect(57, 47, 10, 14, 0);
+  display.setCursor(57, 47);
+  display.setTextSize(2);
+  display.printf("%c", charCursor);
+  display.display();
 }

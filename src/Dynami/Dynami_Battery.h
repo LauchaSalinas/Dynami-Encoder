@@ -3,29 +3,28 @@
 
 #include <Arduino.h>
 #include <ArduinoSort.h>
-#include "Dynami_MediatedComponent.h"
+
+#include "./abstractions/BaseComponent.h"
+#include "./abstractions/Mediator.h"
 
 #define batteryPin 36 // Analog input pin
 #define chargerPin 34 // Digital input pin
 
-
-class MediatedComponent;
-
-class Dynami_Battery : public MediatedComponent
+class Dynami_Battery : public BaseComponent
 {
 public:
   Dynami_Battery();
   void batterySetup();
   void batteryLoop();
   bool isBatteryConnected();
-  
+
   // Getters & Setters
-  int   getCellsQty();
-  bool  getBatteryConnectionStatus();
-  bool  getChargerStatus();
-  int   getBatteryValue();
-  float getBatVoltageValue();
-  int   getBatPercentage();
+  int getCellsQty() { return this->cellsQty; };
+  bool getBatteryConnectionStatus() { return this->batConnected; };
+  bool getChargerStatus() { return this->chargerConnected; };
+  int getBatteryValue() { return this->batteryValue; };
+  float getBatVoltageValue() { return this->batVoltage; };
+  int getBatPercentage() { return this->batPercentage; };
 
 private:
   int batteryValue;
@@ -38,12 +37,12 @@ private:
   bool chargerLastStatus = false;
   bool chargerPinReading = false;
 
-  //Private Methods
+  // Private Methods
   void checkVoltage();
   bool isChargerConnected();
   void batPercentageToCells();
 
-  //External Notifiers
+  // External Notifiers
   void updateBatPercToCells();
   void chargerStatusChanged();
   void batteryConnectionStatusChanged();

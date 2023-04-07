@@ -9,6 +9,9 @@
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
 
+#include <vector>
+#include <string>
+
 #include "Dynami_Mediator.h"
 
 #define dynami_firmware_version_ 1
@@ -27,12 +30,15 @@ public:
     char *get_wifi_status();
     HTTPClient http;
     void StartWifi();
-    void ConnectWifi();
+    bool ConnectWifi();
     bool IsWifiConnected();
     void updateOTAWebServerClose();
     void updateOTAWebServer();
-    void updateStopWifi();
+    void TurnOffWifi();
     bool CheckSSIDinAvailableSSIDs(const char *storedSSID);
+    void ScanSSID();
+    std::vector<String> AvailableSSIDs;
+    int nNetworks = 0;
     int CheckWebVersion();
     void StartHTTPUpdate();
 

@@ -85,12 +85,12 @@ void Dynami_Debug::SerialRead()
     }
     if (strcmp(charArray, "c+") == 0)
     {
-        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration + 0.1;
+        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration + 1;
         SERIAL.printf("calibration : %f", val);
     }
     if (strcmp(charArray, "c-") == 0)
     {
-        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration - 0.1;
+        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration - 1;
         SERIAL.printf("calibration : %f", val);
     }
 }
@@ -146,12 +146,12 @@ void Dynami_Debug::SerialRead2()
     }
     if (rxStr == '+')
     {
-        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration + 0.1;
+        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration + 1;
         SERIAL.printf("calibration : %f", val);
     }
     if (rxStr == '-')
     {
-        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration - 0.1;
+        double val = dynamiMediator->dynamiProgram->calibration = dynamiMediator->dynamiProgram->calibration - 1;
         SERIAL.printf("calibration : %f", val);
     }
 }

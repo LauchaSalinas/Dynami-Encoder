@@ -2,7 +2,7 @@
 #define Dynami_Debug_h
 
 #include "Dynami_Mediator.h"
-#include "Dynami_Timer.h"
+#include "./resources/Dynami_Timer.h"
 
 #define ON true
 #define OFF false
@@ -44,7 +44,7 @@ public:
 private:
     bool debug_service_status_ = true;
     bool debug_encoder_status_ = false;
-    bool debug_velocity_status_ = true;
+    bool debug_velocity_status_ = false; //this
     bool debug_battery_status_ = false;
     bool debug_distance_status_ = false;
     bool debug_acceleration_status_ = false;

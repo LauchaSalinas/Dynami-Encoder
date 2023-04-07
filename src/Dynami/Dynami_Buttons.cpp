@@ -38,9 +38,13 @@ void Dynami_Buttons::buttonsLoop()
   shortPressL();
   shortPressC();
   shortPressR();
-  longPressL();
-  longPressC();
-  longPressR();
+  bool button1Long = longPressL();
+  bool button2Long = longPressC();
+  bool button3Long = longPressR();
+  if (button1Long && button2Long && button3Long)
+  {
+    dynamiMediator->allButtonsLongPress();
+  }
 }
 
 bool Dynami_Buttons::shortPressL()

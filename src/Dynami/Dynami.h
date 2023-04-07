@@ -7,13 +7,14 @@
 #include "Dynami_EnergySave.h"
 #include "Dynami_Encoder.h"
 #include "Dynami_Program.h"
-#include "Dynami_NotifyCenter.h"
 #include "Dynami_Buttons.h"
 #include "Dynami_Mediator.h"
 #include "Dynami_Update.h"
 #include "Dynami_Filesystem.h"
 #include "Dynami_Debug.h"
 #include "Dynami_Reps.h"
+#include "Dynami_States.h"
+
 
 
 class Dynami
@@ -31,7 +32,6 @@ private:
     Dynami_Display dynamiDisplay;
     Dynami_Buttons dynamiButtons;
     Dynami_EnergySave dynamiEnergySave;
-    Dynami_NotifyCenter dynamiNotifyCenter;
     Dynami_Mediator dynamiMediator;
     Dynami_Update dynamiUpdate;
     Dynami_Filesystem dynamiFilesystem;

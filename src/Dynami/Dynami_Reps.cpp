@@ -29,8 +29,25 @@ void Dynami_Reps::DeleteRep(unsigned int index)
     repCounter--;
     rep repToDelete = repVector[index];
     this->repVector.erase(repVector.begin() + index);
-    CalculateBestRep(repToDelete, false);
-    CalculateMeanRep(repToDelete, false);
+    if (index == 0)
+    {
+        bestRep = {0, 0, 0, 0, 0};
+        meanRep = {0, 0, 0, 0, 0};
+    }
+    else
+    {
+        CalculateBestRep(repToDelete, false);
+        CalculateMeanRep(repToDelete, false);
+    }
+    return;
+}
+
+void Dynami_Reps::DeleteAllReps(void)
+{
+    this->repVector.clear();
+    repCounter = -1;
+    bestRep = {0, 0, 0, 0, 0};
+    meanRep = {0, 0, 0, 0, 0};
     return;
 }
 
